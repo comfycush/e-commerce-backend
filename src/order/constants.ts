@@ -1,0 +1,15 @@
+export enum PaymentMethod {
+  CREDIT_CARD = 'credit_card',
+  GOPAY = 'gopay',
+  QRIS = 'qris',
+  SHOPEEPAY = 'shopeepay',
+  BANK_TRANSFER = 'bank_transfer',
+  E_CHANNEL = 'echannel',
+  BCA_KLIKPAY = 'bca_klikpay',
+  BCA_KLIKBCA = 'bca_klikbca',
+  BRI_EPAY = 'bri_epay',
+  CIMB_CLICKS = 'cimb_clicks',
+  DANAMON_ONLINE = 'danamon_online',
+  CSTORE = 'cstore',
+  AKULAKU = 'akulaku',
+}
