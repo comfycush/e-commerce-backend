@@ -26,6 +26,9 @@ export class VariationOption {
   })
   variation: Variation;
 
+  @Column()
+  value: string;
+
   @CreateDateColumn()
   created: Date;
 
