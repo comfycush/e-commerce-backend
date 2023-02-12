@@ -2,13 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserAddress } from './user-address.entity';
+import { User } from './user.entity';
 
-@Entity('address')
+@Entity('addresses')
 export class Address {
   @PrimaryGeneratedColumn()
   id: number;
@@ -43,6 +43,6 @@ export class Address {
   @UpdateDateColumn()
   updated: Date;
 
-  @OneToMany(() => UserAddress, (userAddress) => userAddress.address)
-  userAddresses: UserAddress[];
+  @ManyToOne(() => User, (user) => user.addresses)
+  user: User;
 }

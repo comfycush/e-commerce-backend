@@ -15,6 +15,8 @@ import { TerminusModule } from '@nestjs/terminus';
 import { ProductsModule } from './products/products.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { AuthModule } from './auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -23,12 +25,19 @@ import { OrderModule } from './order/order.module';
       load: [configuration],
     }),
 
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 1,
+      ignoreUserAgents: [/googlebot/gi, new RegExp('bingbot', 'gi')],
+    }),
+
     DatabaseModule,
     UsersModule,
     TerminusModule,
     ProductsModule,
     CartModule,
     OrderModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

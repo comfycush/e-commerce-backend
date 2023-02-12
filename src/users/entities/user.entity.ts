@@ -10,7 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserAddress } from './user-address.entity';
+import { Role } from '../constants';
+import { Address } from './address.entity';
 
 @Entity('users')
 export class User {
@@ -40,8 +41,23 @@ export class User {
   })
   lastName: string;
 
-  @Column()
+  @Column({
+    name: 'phone_number',
+  })
   phoneNumber: string;
+
+  @Column({
+    name: 'role',
+    type: 'enum',
+    nullable: false,
+    enum: Role,
+  })
+  role: Role;
+
+  @Column({
+    default: true,
+  })
+  status: boolean;
 
   @CreateDateColumn()
   created: Date;
@@ -49,11 +65,12 @@ export class User {
   @UpdateDateColumn()
   updated: Date;
 
-  @OneToMany(() => UserAddress, (userAddress) => userAddress.user)
-  userAddresses: UserAddress[];
+  @OneToMany(() => Address, (address) => address.user)
+  addresses: Address[];
 
   @Column({
     name: 'cart_id',
+    nullable: true,
   })
   cartId: number;
   @OneToOne(() => Cart, (cart) => cart.user)
