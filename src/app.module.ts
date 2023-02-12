@@ -13,10 +13,11 @@ import { DatabaseModule } from './database/database.module';
 import { AccessLogMiddleware } from './logger/logger.middleware';
 import { TerminusModule } from '@nestjs/terminus';
 import { ProductsModule } from './products/products.module';
-import { CartModule } from './cart/cart.module';
+import { CartsModule } from './cart/carts.module';
 import { OrderModule } from './order/order.module';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -32,12 +33,14 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
 
     DatabaseModule,
-    UsersModule,
     TerminusModule,
+
+    UsersModule,
     ProductsModule,
-    CartModule,
+    CartsModule,
     OrderModule,
     AuthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

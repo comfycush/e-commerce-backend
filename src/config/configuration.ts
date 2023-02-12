@@ -3,8 +3,8 @@ export default () => ({
   version: 'v1',
 
   basicAuth: {
-    username: process.env.SWAGGER_AUTH_USERNAME,
-    password: process.env.SWAGGER_AUTH_PASSWORD,
+    username: process.env.BASIC_AUTH_USERNAME,
+    password: process.env.BASIC_AUTH_PASSWORD,
   },
 
   database: {

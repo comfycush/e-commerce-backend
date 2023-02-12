@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcryptjs';
-import { Repository } from 'typeorm';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import { Brackets, Repository, UpdateResult } from 'typeorm';
+import { Role } from '../constants';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { findByUsernameParams } from '../types/params';
 
@@ -43,9 +46,7 @@ export class UserService {
           query['username'] = username;
         }
       }
-      if (role) {
-        query['role'] = role;
-      }
+      query['role'] = role;
 
       return this.userRepository.findOneBy(query);
     } catch (error) {
@@ -77,6 +78,91 @@ export class UserService {
       const salt = genSaltSync(10);
       user.password = hashSync(payload.password, salt);
 
+      return this.userRepository.save(user);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async update(id: number, payload: UpdateUserDto): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+
+      if (user.username !== payload.username) {
+        const checkUsername = await this.checkByUsername(payload.username);
+
+        if (checkUsername) {
+          throw new BadRequestException('Username already used.');
+        } else {
+          user.username = payload.username;
+        }
+      }
+
+      if (user.email !== payload.email) {
+        const checkEmail = await this.userRepository.findBy({
+          email: payload.email,
+        });
+
+        if (checkEmail) {
+          throw new BadRequestException('Email already used');
+        } else {
+          user.email = payload.email;
+        }
+      }
+
+      user.firstName = payload.firstName;
+      user.lastName = payload.lastName;
+      user.phoneNumber = payload.phoneNumber;
+
+      return this.userRepository.save(user);
+    } catch (error) {
+      if (error?.response?.statusCode === 400) {
+        throw new BadRequestException(error.response.message);
+      } else {
+        throw new Error(error);
+      }
+    }
+  }
+
+  async updateUserCart(id: number, cartId: number): Promise<UpdateResult> {
+    return this.userRepository.update(id, {
+      cartId,
+    });
+  }
+
+  async getUsersByRole(
+    role: Role,
+    options: IPaginationOptions,
+    search: string,
+    orderBy = 'created',
+    order: 'DESC' | 'ASC' = 'DESC',
+  ) {
+    try {
+      const builder = this.userRepository.createQueryBuilder('user');
+      builder.where('user.role = :role', { role });
+      if (search) {
+        builder.andWhere(
+          new Brackets((qb) => {
+            qb.orWhere('user.email LIKE :email', {
+              email: `%${search}%`,
+            }).orWhere('user.username LIKE :username', {
+              username: `%${search}%`,
+            });
+          }),
+        );
+      }
+      builder.orderBy('user.' + orderBy), order;
+
+      return paginate<User>(builder, options);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async changeUserStatus(id: number, status: boolean) {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      user.status = status;
       return this.userRepository.save(user);
     } catch (error) {
       throw new Error(error);

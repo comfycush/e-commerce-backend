@@ -1,19 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { getResponseFormat } from 'src/utils/misc';
 import { AuthService } from './auth.service';
 import { LoginPayloadDto } from './dto/login-payload.dto';
 import { RegisterUserPayloadDto } from './dto/register-user-payload.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -36,10 +30,10 @@ export class AuthController {
   })
   @Post('customer/register')
   async customerRegister(@Body() payload: RegisterUserPayloadDto) {
-    return getResponseFormat(
-      200,
-      'Customer successfully registered',
-      await this.authService.registerCustomer(payload),
-    );
+    const customer = await this.authService.registerCustomer(payload);
+    return getResponseFormat(200, 'Customer successfully registered', {
+      username: customer.username,
+      email: customer.email,
+    });
   }
 }

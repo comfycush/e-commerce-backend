@@ -8,7 +8,8 @@ import { ProductsController } from './products.controller';
 import { VariationOption } from './entities/variation-option.entity';
 import { ProductConfiguration } from './entities/product-configuration.entity';
 import { Discount } from './entities/discount.entity';
-import { ProductsService } from './services/product.service';
+import { ProductService } from './services/product.service';
+import { ProductsService } from './products.service';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { ProductsService } from './services/product.service';
     TypeOrmModule.forFeature([Discount]),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, ProductService],
 })
 export class ProductsModule {}
