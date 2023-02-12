@@ -17,7 +17,6 @@ import { CartsModule } from './cart/carts.module';
 import { OrderModule } from './order/order.module';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -40,7 +39,6 @@ import { AdminModule } from './admin/admin.module';
     CartsModule,
     OrderModule,
     AuthModule,
-    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,6 +10,7 @@ import { ProductConfiguration } from './entities/product-configuration.entity';
 import { Discount } from './entities/discount.entity';
 import { ProductService } from './services/product.service';
 import { ProductsService } from './products.service';
+import { ProductCategoryService } from './services/product-category.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { ProductsService } from './products.service';
     TypeOrmModule.forFeature([Discount]),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, ProductService],
+  providers: [ProductsService, ProductService, ProductCategoryService],
 })
 export class ProductsModule {}

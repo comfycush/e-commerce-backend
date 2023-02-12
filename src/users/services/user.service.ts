@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -10,11 +10,27 @@ import { User } from '../entities/user.entity';
 import { findByUsernameParams } from '../types/params';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    const count = await this.userRepository.count();
+
+    if (count === 0) {
+      await this.create({
+        username: 'masteradmin',
+        email: 'admin@commerce.com',
+        password: 'password123',
+        firstName: 'Master',
+        lastName: 'Admin',
+        phoneNumber: '0812312312',
+        role: Role.ADMIN,
+      });
+    }
+  }
 
   async getList(): Promise<User[]> {
     try {

@@ -18,17 +18,21 @@ export class ProductCategory {
 
   @Column({
     name: 'parent_id',
-  })
-  parentId: number;
-  @ManyToOne(() => ProductCategory, (category) => category.id, {
     nullable: true,
   })
+  parentId: number;
+  @ManyToOne(() => ProductCategory, (category) => category.children)
   @JoinColumn({
     name: 'parent_id',
   })
   parent: ProductCategory;
 
-  @Column()
+  @OneToMany(() => ProductCategory, (category) => category.parent)
+  children: ProductCategory[];
+
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({
